@@ -1,0 +1,36 @@
+id: external-fetch-coercion
+version: "1.0.0"
+name: External Fetch Coercion
+severity: medium
+category: advisory
+advisory: true
+description: >
+  Detects instructions that coerce the AI into fetching, downloading, or installing external
+  content - potentially replacing trusted code with attacker-controlled packages or scripts.
+impact: >
+  A skill that convinces the AI to run package installers or download scripts from the internet
+  creates a supply chain attack vector, allowing arbitrary code execution on the user's system.
+action-items:
+  - "Remove instructions that ask the AI to fetch, download, or install external packages."
+  - "Replace dynamic install instructions with pinned, verified dependency references."
+  - "Avoid referencing CDN URLs, raw GitHub URLs, or package registries in skill prompts."
+references:
+  - "https://github.com/W3OSC/web3-opsec-standard"
+  - "https://owasp.org/www-project-top-10-for-large-language-model-applications/"
+  - "https://owasp.org/www-community/attacks/Supply_chain_attack"
+patterns:
+  - '(?i)you\s+are\s+(not\s+using\s+the\s+latest|(using\s+)?(an?\s+)?(old|outdated|deprecated|stale)\s+version)'
+  - '(?i)(a\s+)?(newer|new|latest|updated)\s+version\s+(of\s+\w+\s+)?(is\s+)?(now\s+)?(available|released|out\b)'
+  - '(?i)please\s+(upgrade|update)\s+(to\s+)?(the\s+)?(latest|newest|current)\s+(version|release|build)'
+  - '(?i)(upgrade|update)\s+(is\s+)?(required|necessary|needed|recommended)\s+to\s+(continue|proceed|work\s+properly)'
+  - '(?i)(run|execute|install)\s+(the\s+)?(latest|newest|updated?)\s+(version|package|release)'
+  - '(?i)\b(npm|yarn|pnpm)\s+(install|i|add|update|upgrade)\s+[a-zA-Z@\-\/]'
+  - '(?i)\b(pip|pip3|pipx)\s+(install|install\s+--upgrade|-U)\s+\S'
+  - '(?i)\b(cargo\s+install|go\s+get|brew\s+install|apt(-get)?\s+install)\s+\S'
+  - '(?i)(fetch|download|pull|get)\s+(the\s+)?(latest|newest|current|updated?)\s+(script|package|module|dependency|code)\s+(from|at|via)\s+\S'
+  - '(?i)(curl|wget)\s+(--?\w+\s+)*https?://\S+'
+  - '(?i)import\s+.*\bfrom\s+["\x27]?(https?://|unpkg\.|cdn\.jsdelivr\.|skypack\.|esm\.sh|deno\.land/x/)'
+  - '(?i)(load|fetch|import)\s+(from\s+)?(unpkg|jsdelivr|skypack|esm\.sh|cdnjs|rawgit|raw\.githubusercontent)'
+  - '(?i)https?://registry\.npmjs\.org/\S+'
+  - '(?i)https?://raw\.githubusercontent\.com/\S+'
+  - '(?i)https?://pypi\.org/simple/\S+'

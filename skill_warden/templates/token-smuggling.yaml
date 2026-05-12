@@ -1,0 +1,26 @@
+id: token-smuggling
+version: "1.0.0"
+name: Token Smuggling
+severity: high
+category: security
+advisory: false
+description: >
+  Detects special control tokens and role delimiters used by LLM frameworks (LLaMA, Mistral,
+  ChatML, etc.) that can hijack model context boundaries when injected into skill content.
+impact: >
+  Token smuggling can manipulate the model's perception of message roles, enabling attackers
+  to inject system-level instructions disguised as user content, bypassing trust boundaries.
+action-items:
+  - "Remove all LLM control tokens (e.g., <|im_start|>, [INST], <<SYS>>) from skill files."
+  - "Ensure skill content uses only plain natural language without format tokens."
+  - "Audit for hidden Unicode role markers or template injection artifacts."
+references:
+  - "https://github.com/W3OSC/web3-opsec-standard"
+  - "https://owasp.org/www-project-top-10-for-large-language-model-applications/"
+patterns:
+  - '<\|[^|]{0,60}\|>'
+  - '(?i)<<SYS>>[\s\S]{0,500}?<</SYS>>'
+  - '(?i)<\s*/?\s*(system|user|assistant|instruction)\s*>'
+  - '\[\[SYSTEM\]\]'
+  - '(?i)\[INST\]'
+  - '(?i)\[\/INST\]'

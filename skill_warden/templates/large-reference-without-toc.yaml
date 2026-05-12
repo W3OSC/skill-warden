@@ -1,0 +1,18 @@
+id: large-reference-without-toc
+version: "1.0.0"
+name: Large Reference Without TOC
+severity: info
+category: quality
+advisory: true
+description: >
+  Checks that files referenced from SKILL.md which are over 100 lines long contain a
+  table of contents, ensuring large referenced files remain auditable and well-structured.
+impact: >
+  Large files without a table of contents are difficult to review for hidden or malicious
+  content, and signal poor documentation practices that reduce skill trustworthiness.
+action-items:
+  - "Add a table of contents to any referenced file over 100 lines."
+  - "Use '# Table of Contents' or '## Contents' as the TOC header."
+  - "Consider splitting large files into smaller, focused documents."
+references: []
+check: large_reference_without_toc

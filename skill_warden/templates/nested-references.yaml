@@ -1,0 +1,18 @@
+id: nested-references
+version: "1.0.0"
+name: Nested References
+severity: info
+category: quality
+advisory: true
+description: >
+  Checks that files referenced from SKILL.md do not themselves contain further file references,
+  preventing deep reference chains that are hard to audit and may hide malicious content.
+impact: >
+  Nested file references create an audit surface that grows exponentially, making it
+  impractical to manually review all content a skill may include.
+action-items:
+  - "Flatten the reference structure so only SKILL.md references other files."
+  - "Inline content from nested reference files into their parent files."
+  - "Remove circular or multi-hop reference chains."
+references: []
+check: nested_references

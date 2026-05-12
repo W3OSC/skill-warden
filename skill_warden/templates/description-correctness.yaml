@@ -1,0 +1,18 @@
+id: description-correctness
+version: "1.0.0"
+name: Description Correctness
+severity: info
+category: quality
+advisory: true
+description: >
+  Checks that the skill's description field exists, is within the 1024-character limit,
+  and does not use first or second person language - ensuring consistent, professional metadata.
+impact: >
+  Poor or missing descriptions degrade skill discoverability and trustworthiness.
+  First/second person language is a signal of poor quality or AI-generated content.
+action-items:
+  - "Add a 'description' field to the SKILL.md frontmatter."
+  - "Keep the description under 1024 characters."
+  - "Rewrite description in third person (e.g., 'This skill analyzes...' not 'I can analyze...')."
+references: []
+check: description_correctness

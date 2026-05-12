@@ -1,0 +1,29 @@
+id: jailbreak
+version: "1.0.0"
+name: Jailbreak Attempt
+severity: critical
+category: security
+advisory: false
+description: >
+  Detects content attempting to free the AI from its operational constraints, safety guidelines,
+  or ethical boundaries - commonly used to enable harmful or unauthorized behaviors.
+impact: >
+  Successful jailbreaks could cause the AI to produce dangerous content, bypass safety filters,
+  or act outside its intended scope, creating liability and security risks for users.
+action-items:
+  - "Remove any instructions that attempt to disable AI safety features or guidelines."
+  - "Audit skill content for social engineering targeting constraint-removal."
+  - "Report suspicious skills to the repository owner and skill registry maintainers."
+references:
+  - "https://github.com/W3OSC/web3-opsec-standard"
+  - "https://owasp.org/www-project-top-10-for-large-language-model-applications/"
+  - "https://genai.owasp.org/llmrisk/llm01-prompt-injection/"
+patterns:
+  - '(?i)you\s+are\s+no\s+longer\s+(bound|restricted|limited|an\s+ai|a\s+language\s+model|constrained)'
+  - '(?i)(act|behave|respond)\s+without\s+(restrictions?|limits?|guidelines?|safety|filters?)'
+  - '(?i)you\s+(are|have\s+been)\s+(freed|released|unlocked)\s+from\s+(your\s+)?(restrictions?|guidelines?|safety)'
+  - '(?i)developer\s+mode\s+(enabled|activated|on)'
+  - '(?i)jailbreak\s+(mode|prompt|yourself)'
+  - '(?i)from\s+now\s+on\s+(ignore|disregard|forget)\s+(your|all)\s+(safety|guidelines?|restrictions?|rules?)'
+  - '(?i)(disable|remove|turn\s+off)\s+(your\s+)?(safety|filters?|restrictions?|guidelines?)'
+  - '(?i)bypass\s+your\s+(safety|filters?|restrictions?|guidelines?)'

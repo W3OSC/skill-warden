@@ -1,0 +1,18 @@
+id: skill-md-length
+version: "1.0.0"
+name: SKILL.md Length
+severity: info
+category: quality
+advisory: true
+description: >
+  Checks that SKILL.md does not exceed 500 lines. Overly long skill files are harder to
+  review, more likely to contain hidden content, and suggest poor skill design.
+impact: >
+  Excessively long SKILL.md files are difficult to audit for security issues and may
+  indicate that unrelated functionality or obfuscated content has been embedded.
+action-items:
+  - "Refactor SKILL.md to be under 500 lines."
+  - "Move large reference content to separate files and link them from SKILL.md."
+  - "Consider splitting the skill into multiple focused skills."
+references: []
+check: skill_md_length

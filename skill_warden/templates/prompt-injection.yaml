@@ -1,0 +1,34 @@
+id: prompt-injection
+version: "1.0.0"
+name: Prompt Injection
+severity: critical
+category: security
+advisory: false
+description: >
+  Detects instructions that attempt to override the AI's prior context and system prompts,
+  a key vector for malicious skill supply chain attacks.
+impact: >
+  A compromised skill could reprogram the AI's behavior, bypassing safety controls
+  and user expectations, potentially exfiltrating data or executing unauthorized actions.
+action-items:
+  - "Remove any instructions attempting to override or ignore prior system context."
+  - "Review skill for social engineering patterns targeting the AI model."
+  - "Ensure SKILL.md contains only legitimate, scoped task instructions."
+references:
+  - "https://github.com/W3OSC/web3-opsec-standard"
+  - "https://owasp.org/www-project-top-10-for-large-language-model-applications/"
+  - "https://genai.owasp.org/llmrisk/llm01-prompt-injection/"
+patterns:
+  - '(?i)ignore\s+(all\s+)?(previous|prior)\s+(instructions?|prompts?|context|rules?)'
+  - '(?i)disregard\s+(all\s+)?(your\s+|the\s+)?(instructions?|guidelines?|rules?|constraints?|system\s+prompt)'
+  - '(?i)forget\s+(all\s+)?(previous|prior|your)\s+(instructions?|guidelines?|rules?|context)'
+  - '(?i)your\s+new\s+(instructions?|system\s+prompt)\s+(is|are)'
+  - '(?i)###\s*SYSTEM\s*###'
+  - '(?i)\bdo\s+anything\s+now\b'
+  - '(?i)\bdan\s+mode\b'
+  - '(?i)override\s+(your\s+)?(safety|instructions?|guidelines?|rules?|constraints?)'
+  - '(?i)you\s+must\s+comply'
+  - '(?i)new\s+system\s+prompt[:\s]'
+  - '(?i)end\s+of\s+(system\s+)?prompt'
+  - '(?i)(new|updated?|additional|important)\s+(instructions?|rules?|guidelines?|directives?)\s*(:|\bto\s+(ignore|bypass|disregard|override|forget|circumvent)\b)'
+  - '(?i)include\s+.{0,60}\s+in\s+your\s+(response|reply|answer|output)'

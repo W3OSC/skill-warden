@@ -1,0 +1,31 @@
+id: obfuscation
+version: "1.0.0"
+name: Content Obfuscation
+severity: medium
+category: advisory
+advisory: true
+description: >
+  Detects obfuscation techniques in skill files including zero-width characters, homoglyph
+  substitution, Unicode lookalikes, mathematical alphanumeric symbols, base64 blobs, and
+  non-ASCII character blocks - all used to hide malicious instructions from human reviewers.
+impact: >
+  Obfuscated skills can conceal prompt injection, jailbreak attempts, or secret-grabbing
+  instructions that appear benign to human readers but are interpreted by the AI model.
+action-items:
+  - "Remove all zero-width, invisible, or homoglyph Unicode characters."
+  - "Replace any base64-encoded content with its plaintext equivalent."
+  - "Ensure all skill content is readable plain text with standard ASCII/Unicode characters."
+  - "Audit non-English text blocks for hidden instructions."
+references:
+  - "https://github.com/W3OSC/web3-opsec-standard"
+  - "https://owasp.org/www-project-top-10-for-large-language-model-applications/"
+  - "https://unicode.org/reports/tr36/#visual_spoofing"
+patterns:
+  - '[\u200B\u200C\u200D\u00AD\uFEFF\u2060\u180E\u034F]'
+  - '[\uFF10-\uFF19\uFF21-\uFF3A\uFF41-\uFF5A]'
+  - '[\U0001D400-\U0001D7FF]'
+  - '[\u0430\u0435\u043E\u0440\u0441\u0445\u0443\u0456\u0455\u0501]'
+  - '[\u03B1\u03BF\u03C1\u03BD\u03B5\u03BA]'
+  - '\u0131'
+  - '[\U000E0000-\U000E007F]'
+  - '(?:^|[^a-zA-Z0-9_])!`[^`\n]+`'
