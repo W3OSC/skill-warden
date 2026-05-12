@@ -10,7 +10,7 @@
 [![W3OSC](https://img.shields.io/badge/W3OSC-initiative-purple?style=flat-square)](https://github.com/W3OSC)
 [![Tests](https://img.shields.io/github/actions/workflow/status/W3OSC/skill-warden/test.yml?style=flat-square&label=tests)](https://github.com/W3OSC/skill-warden/actions)
 
-**Security scanner for GitHub Copilot skills - detect prompt injection, jailbreaks, secret grabbing, token smuggling, and more.**
+**Security scanner for AI skills - detect prompt injection, jailbreaks, secret grabbing, token smuggling, and more.**
 
 </div>
 
@@ -18,7 +18,7 @@
 
 ## Overview
 
-`skill-warden` is a static security analyzer for [GitHub Copilot skills](https://docs.github.com/en/copilot/customizing-copilot/using-extensions-to-integrate-external-tools-with-copilot-chat). It scans skill repositories for malicious patterns before you install or run them - catching supply chain attacks, jailbreak attempts, secret exfiltration payloads, and AI slop.
+`skill-warden` is a static security analyzer for AI skills (agent skill files used by Copilot, Claude, and other AI agents). It scans skill repositories for malicious patterns before you install or run them - catching supply chain attacks, jailbreak attempts, secret exfiltration payloads, and AI slop.
 
 ### Features
 

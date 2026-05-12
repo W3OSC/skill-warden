@@ -5,11 +5,11 @@ build-backend = "hatchling.build"
 [project]
 name = "skill-warden"
 version = "1.0.0"
-description = "Security scanner for GitHub Copilot skills - detect prompt injection, jailbreaks, secret grabbing, and more"
+description = "Security scanner for AI skills - detect prompt injection, jailbreaks, secret grabbing, and more"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [{name = "W3OSC", email = "security@w3osc.org"}]
-keywords = ["security", "llm", "copilot", "skills", "static-analysis", "prompt-injection"]
+keywords = ["security", "llm", "ai-skills", "skills", "static-analysis", "prompt-injection"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",

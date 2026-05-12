@@ -85,7 +85,7 @@ def _run_scan(args: argparse.Namespace) -> int:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="skill-warden",
-        description="Security scanner for GitHub Copilot skills.",
+        description="Security scanner for AI skills.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "Examples:\n"
