@@ -5,7 +5,7 @@
 <div align="center">
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
-[![PyPI](https://img.shields.io/pypi/v/skill-warden?style=flat-square&color=blueviolet)](https://pypi.org/project/skill-warden/)
+[![PyPI](https://img.shields.io/pypi/v/skill_warden?style=flat-square&color=blueviolet)](https://pypi.org/project/skill-warden/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 [![W3OSC](https://img.shields.io/badge/W3OSC-initiative-purple?style=flat-square)](https://github.com/W3OSC)
 [![Tests](https://img.shields.io/github/actions/workflow/status/W3OSC/skill-warden/test.yml?style=flat-square&label=tests)](https://github.com/W3OSC/skill-warden/actions)
