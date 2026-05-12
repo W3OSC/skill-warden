@@ -156,15 +156,7 @@ Add `skill-warden` to your CI pipeline to block unsafe skills before they reach 
 
 ### For Skill Authors
 
-If your skill repo passes `skill-warden` clean, you can display a verified badge in your README:
-
-[![skill-warden](https://img.shields.io/badge/skill--warden-safe-brightgreen?style=flat-square&logo=shield)](https://github.com/W3OSC/skill-warden)
-
-```markdown
-[![skill-warden](https://img.shields.io/badge/skill--warden-safe-brightgreen?style=flat-square&logo=shield)](https://github.com/W3OSC/skill-warden)
-```
-
-Add this workflow to your skill repo to keep the badge meaningful - it will fail the run if a hard security violation is ever introduced:
+Add this workflow to your skill repo - it fails CI on any hard violation and uploads findings to the GitHub Security tab:
 
 ```yaml
 # .github/workflows/skill-warden.yml
@@ -185,6 +177,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: W3OSC/skill-warden-action@v1
 ```
+
+Then add this badge to your README - it reflects the actual latest scan result:
+
+```markdown
+![Skill Security Scan](https://github.com/OWNER/REPO/actions/workflows/skill-warden.yml/badge.svg)
+```
+
+Replace `OWNER/REPO` with your repository. The badge goes red the moment a hard violation is detected.
 
 ---
 
