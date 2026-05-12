@@ -277,7 +277,7 @@ def _template_to_sarif_rule(t) -> dict:
         "fullDescription": {"text": t.description},
         "defaultConfiguration": {"level": level},
         "helpUri": ref,
-        "properties": {"tags": ["security", "skill-warden", t.category]},
+        "properties": {"tags": list(dict.fromkeys(["security", "skill-warden", t.category]))},
     }
 
 
