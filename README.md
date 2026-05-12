@@ -287,9 +287,21 @@ Releases are published to [PyPI](https://pypi.org/project/skill-warden/) automat
 
 ---
 
-## Contributing
+## Contributors
 
-`skill-warden` is an open-source initiative by **[W3OSC - Web3 Opsec Security Community](https://github.com/W3OSC)**.
+<br>
+<table>
+<tr>
+    <td align="center">
+        <a href="https://github.com/forefy">
+            <img src="https://avatars.githubusercontent.com/u/166978930?v=4" width="100;" alt="forefy"/>
+            <br />
+            <sub><b>forefy</b></sub>
+        </a>
+    </td>
+</tr>
+</table>
+<br>
 
 We welcome:
 - New detector templates (add a `.yaml` to `skill_warden/templates/`)
@@ -314,12 +326,12 @@ pytest tests/ -v
 
 ---
 
-## Security
 
-To report a vulnerability in `skill-warden` itself, please open a [GitHub Security Advisory](https://github.com/W3OSC/skill-warden/security/advisories/new) rather than a public issue.
-
----
-
-<div align="center">
-  <sub>Built with  by <a href="https://github.com/W3OSC">W3OSC</a> - Web3 Opsec Security Community</sub>
-</div>
+> **📢 Contributing to W3OS**
+>
+> W3OS is an open standard developed collaboratively by the Web3 security community. Contributions by anyone are welcome.
+>
+> - 📖 **Read the [Contributing Guide](CONTRIBUTING.md)** for detailed information on how to propose changes, add new sections, and improve existing content
+> - 💬 **Join the [Telegram Discussion Group](https://t.me/+yhmMnY2DyNBmNDlh)** to participate in ongoing collaboration and connect with other contributors
+>
+> _Help build the comprehensive operational security standard for Web3 organizations._
