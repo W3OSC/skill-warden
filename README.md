@@ -154,6 +154,40 @@ To add a custom detector, drop a new `.yaml` file into `skill_warden/templates/`
 
 Add `skill-warden` to your CI pipeline to block unsafe skills before they reach users.
 
+### For Skill Authors
+
+If your skill repo passes `skill-warden` clean, you can display a verified badge in your README:
+
+[![skill-warden](https://img.shields.io/badge/skill--warden-safe-brightgreen?style=flat-square&logo=shield)](https://github.com/W3OSC/skill-warden)
+
+```markdown
+[![skill-warden](https://img.shields.io/badge/skill--warden-safe-brightgreen?style=flat-square&logo=shield)](https://github.com/W3OSC/skill-warden)
+```
+
+Add this workflow to your skill repo to keep the badge meaningful - it will fail the run if a hard security violation is ever introduced:
+
+```yaml
+# .github/workflows/skill-warden.yml
+name: Skill Security Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: W3OSC/skill-warden-action@v1
+```
+
+---
+
 ### Basic usage
 
 ```yaml
