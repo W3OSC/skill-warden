@@ -177,7 +177,7 @@ def scan_local(
     skill_dirs = _detect_skill_dirs(base)
     results = []
     for skill_dir in skill_dirs:
-        files = fetch_from_local(str(skill_dir))
+        files = fetch_from_local(str(skill_dir), root=str(base))
         result = _scan_files(
             files=files,
             skill_name=skill_dir.name,

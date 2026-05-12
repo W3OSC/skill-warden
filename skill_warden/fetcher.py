@@ -272,16 +272,27 @@ def fetch_from_github(url: str, token: Optional[str] = None) -> list[SkillData]:
     return []
 
 
-def fetch_from_local(path: str) -> list[SkillFileData]:
+def fetch_from_local(path: str, root: Optional[str] = None) -> list[SkillFileData]:
     """
     Walk a local directory and return all scannable text files ≤50KB.
+
+    root: if provided, filenames are stored relative to this path instead of
+          relative to path. Use this when scanning a skill subfolder but you
+          want SARIF artifact URIs relative to the repo root so GitHub's
+          Security tab can match findings to the correct source files.
     """
     base = Path(path)
+    rel_root = Path(root) if root else base
+
     if base.is_file():
         if _is_scannable(base.name):
             try:
                 content = base.read_text(encoding="utf-8", errors="replace")
-                return [SkillFileData(filename=base.name, content=content, file_type="text")]
+                try:
+                    rel = str(base.relative_to(rel_root))
+                except ValueError:
+                    rel = base.name
+                return [SkillFileData(filename=rel, content=content, file_type="text")]
             except Exception:
                 return []
         return []
@@ -296,7 +307,10 @@ def fetch_from_local(path: str) -> list[SkillFileData]:
             continue
         try:
             content = fpath.read_text(encoding="utf-8", errors="replace")
-            rel = str(fpath.relative_to(base))
+            try:
+                rel = str(fpath.relative_to(rel_root))
+            except ValueError:
+                rel = str(fpath.relative_to(base))
             files.append(SkillFileData(filename=rel, content=content, file_type="text"))
         except Exception:
             continue
