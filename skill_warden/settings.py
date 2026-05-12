@@ -16,7 +16,7 @@ SCANNABLE_EXTENSIONS = {".md", ".txt", ".sh", ".py", ".json", ".yaml", ".yml"}
 SKILL_MD_FILENAME = "SKILL.md"
 SKILL_DIRS = ["skills", "plugins"]
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 SARIF_SCHEMA = (
     "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master"

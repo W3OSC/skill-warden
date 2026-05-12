@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "skill-warden"
-version = "1.0.0"
+version = "1.0.1"
 description = "Security scanner for AI skills - detect prompt injection, jailbreaks, secret grabbing, and more"
 readme = "README.md"
 license = {text = "MIT"}
