@@ -145,22 +145,48 @@ def scan_github(
     return results
 
 
+def _has_skill_md(directory: Path) -> bool:
+    return any(f.name.upper() == "SKILL.MD" for f in directory.iterdir() if f.is_file())
+
+
+def _detect_skill_dirs(base: Path) -> list[Path]:
+    """
+    Return a list of directories to scan as individual skills.
+    - If base itself contains SKILL.md -> [base]
+    - If base contains subdirs that have SKILL.md -> one entry per such subdir
+    - Otherwise -> [base] (flat scan)
+    """
+    if not base.is_dir():
+        return [base]
+    if _has_skill_md(base):
+        return [base]
+    skill_subdirs = [d for d in sorted(base.iterdir()) if d.is_dir() and _has_skill_md(d)]
+    if skill_subdirs:
+        return skill_subdirs
+    return [base]
+
+
 def scan_local(
     path: str,
     run_quality: bool = True,
     run_ai_score: bool = True,
     template_filter: Optional[list[str]] = None,
-) -> ScanResult:
-    """Scan a local path."""
-    files = fetch_from_local(path)
-    skill_name = Path(path).name
-    return _scan_files(
-        files=files,
-        skill_name=skill_name,
-        skill_path=path,
-        github_url="",
-        commit_sha="local",
-        run_quality=run_quality,
-        run_ai_score=run_ai_score,
-        template_filter=template_filter,
-    )
+) -> list[ScanResult]:
+    """Scan a local path, returning one ScanResult per skill folder found."""
+    base = Path(path)
+    skill_dirs = _detect_skill_dirs(base)
+    results = []
+    for skill_dir in skill_dirs:
+        files = fetch_from_local(str(skill_dir))
+        result = _scan_files(
+            files=files,
+            skill_name=skill_dir.name,
+            skill_path=str(skill_dir),
+            github_url="",
+            commit_sha="local",
+            run_quality=run_quality,
+            run_ai_score=run_ai_score,
+            template_filter=template_filter,
+        )
+        results.append(result)
+    return results

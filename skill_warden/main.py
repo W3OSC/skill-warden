@@ -37,13 +37,12 @@ def _run_scan(args: argparse.Namespace) -> int:
 
     try:
         if _is_local_path(target):
-            result = scan_local(
+            results = scan_local(
                 path=target,
                 run_quality=not no_quality,
                 run_ai_score=not no_ai_score,
                 template_filter=template_ids,
             )
-            results = [result]
         else:
             results = scan_github(
                 url=target,
