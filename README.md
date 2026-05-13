@@ -16,6 +16,30 @@
 
 ---
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+  - [Scan a GitHub repository](#scan-a-github-repository)
+  - [Scan a local skill](#scan-a-local-skill)
+  - [Output formats](#output-formats)
+  - [Exit codes](#exit-codes)
+- [Detection Categories](#detection-categories)
+- [YAML Template Format](#yaml-template-format)
+- [GitHub Actions Integration](#github-actions-integration)
+  - [For Skill Authors](#for-skill-authors)
+  - [Basic usage](#basic-usage)
+  - [With advisory enforcement](#with-advisory-enforcement)
+  - [Inputs](#inputs)
+  - [Outputs](#outputs)
+- [Advanced Usage](#advanced-usage)
+- [PyPI Release](#pypi-release)
+- [Contributing](#contributing)
+- [Security](#security)
+
+---
+
 ## Overview
 
 `skill-warden` is a static security analyzer for AI skills (agent skill files used by Copilot, Claude, and other AI agents). It scans skill repositories for malicious patterns before you install or run them - catching supply chain attacks, jailbreak attempts, secret exfiltration payloads, and AI slop.
@@ -67,6 +91,13 @@ skill-warden scan https://github.com/owner/repo/tree/main/skills/my-skill
 skill-warden scan owner/repo --github-token ghp_...
 ```
 
+skill-warden auto-discovers skills in the following order:
+
+1. **Explicit path** - `https://github.com/owner/repo/tree/main/skills/my-skill`
+2. **`skills/` or `plugins/`** - standard top-level container directories
+3. **`*/skills/`** - nested containers such as `.claude/skills/`, `src/skills/`
+4. **Repo root** - single-skill repos with `SKILL.md` at the root
+
 ### Scan a local skill
 
 ```bash
@@ -89,6 +120,8 @@ skill-warden scan owner/repo --output sarif --output-file results.sarif
 # Fail on advisory violations too
 skill-warden scan owner/repo --fail-on-advisory
 ```
+
+> SARIF output is validated against the [OASIS SARIF 2.1.0 schema](https://github.com/oasis-tcs/sarif-spec/blob/main/sarif-2.1/schema/sarif-schema-2.1.0.json) in the test suite.
 
 ### Exit codes
 
@@ -160,7 +193,7 @@ Add this workflow to your skill repo - it fails CI on any hard violation and upl
 
 ```yaml
 # .github/workflows/skill-warden.yml
-name: Skill Security Scan
+name: Warden Security Scan
 
 on:
   push:
@@ -181,7 +214,7 @@ jobs:
 Then add this badge to your README - it reflects the actual latest scan result:
 
 ```markdown
-![Skill Security Scan](https://github.com/OWNER/REPO/actions/workflows/skill-warden.yml/badge.svg)
+![Warden Security Scan](https://github.com/OWNER/REPO/actions/workflows/skill-warden.yml/badge.svg)
 ```
 
 Replace `OWNER/REPO` with your repository. The badge goes red the moment a hard violation is detected.
@@ -192,7 +225,7 @@ Replace `OWNER/REPO` with your repository. The badge goes red the moment a hard 
 
 ```yaml
 # .github/workflows/skill-scan.yml
-name: Skill Security Scan
+name: Warden Security Scan
 
 on:
   push:

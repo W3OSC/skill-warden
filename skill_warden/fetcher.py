@@ -151,15 +151,15 @@ def _fetch_skill_folder(
     if not items:
         return None
 
-    # Check if SKILL.md exists
+    # Check if SKILL.md exists (case-sensitive, per spec)
     skill_md_item = next(
-        (i for i in items if i.get("name", "").upper() == SKILL_MD_FILENAME and i.get("type") == "file"),
+        (i for i in items if i.get("name", "") == SKILL_MD_FILENAME and i.get("type") == "file"),
         None,
     )
     if skill_md_item is None:
-        # Look for any .md file if no SKILL.md
+        # Fall back to program.md only (not arbitrary .md files)
         skill_md_item = next(
-            (i for i in items if i.get("name", "").endswith(".md") and i.get("type") == "file"),
+            (i for i in items if i.get("name", "") == "program.md" and i.get("type") == "file"),
             None,
         )
     if skill_md_item is None:
@@ -170,8 +170,17 @@ def _fetch_skill_folder(
         return None
 
     fm = _parse_frontmatter(skill_md_content)
-    name = fm.get("name") or Path(folder_path).name or "unknown"
+    name = fm.get("name")
     description = fm.get("description")
+
+    # Frontmatter must have name and description
+    if not name or not description:
+        return None
+
+    # name in frontmatter must match the directory name (when not scanning root)
+    dir_name = Path(folder_path).name
+    if dir_name and name != dir_name:
+        return None
 
     files: list[SkillFileData] = []
     for item in items:
@@ -183,7 +192,8 @@ def _fetch_skill_folder(
         content = _decode_file(item)
         if content is None:
             continue
-        files.append(SkillFileData(filename=fname, content=content, file_type="text"))
+        rel_path = f"{folder_path}/{fname}" if folder_path else fname
+        files.append(SkillFileData(filename=rel_path, content=content, file_type="text"))
 
     if not files:
         return None
@@ -196,6 +206,39 @@ def _fetch_skill_folder(
         github_url=github_url,
         commit_sha=commit_sha,
     )
+
+
+def _find_nested_skills(
+    owner: str,
+    repo: str,
+    ref: str,
+    github_url: str,
+    commit_sha: str,
+    headers: dict,
+) -> list[SkillData]:
+    """
+    Check each root-level directory for a nested 'skills/' subdirectory and
+    collect skill folders found there. Covers repos like .claude/skills/,
+    src/skills/, etc.
+    """
+    root_items = _fetch_contents(owner, repo, "", ref, headers)
+    root_dirs = [i for i in root_items if i.get("type") == "dir"]
+
+    skills: list[SkillData] = []
+    for d in root_dirs:
+        nested_path = f"{d['path']}/skills"
+        nested_items = _fetch_contents(owner, repo, nested_path, ref, headers)
+        if not nested_items:
+            continue
+        for item in nested_items:
+            if item.get("type") != "dir":
+                continue
+            s = _fetch_skill_folder(
+                owner, repo, item["path"], ref, github_url, commit_sha, headers
+            )
+            if s:
+                skills.append(s)
+    return skills
 
 
 def fetch_from_github(url: str, token: Optional[str] = None) -> list[SkillData]:
@@ -244,7 +287,7 @@ def fetch_from_github(url: str, token: Optional[str] = None) -> list[SkillData]:
             # Check if it's a container of skill folders or a skill folder itself
             sub_dirs = [i for i in items if i.get("type") == "dir"]
             skill_md = next(
-                (i for i in items if i.get("name", "").upper() == SKILL_MD_FILENAME),
+                (i for i in items if i.get("name", "") == SKILL_MD_FILENAME and i.get("type") == "file"),
                 None,
             )
             if skill_md:
@@ -263,6 +306,11 @@ def fetch_from_github(url: str, token: Optional[str] = None) -> list[SkillData]:
                         skills.append(s)
                 if skills:
                     return skills
+
+    # Try */skills/ pattern - e.g. .claude/skills/, src/skills/
+    nested = _find_nested_skills(owner, repo, branch, github_url, commit_sha, headers)
+    if nested:
+        return nested
 
     # Fall back to root
     skill = _fetch_skill_folder(owner, repo, "", branch, github_url, commit_sha, headers)

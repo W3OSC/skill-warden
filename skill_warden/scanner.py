@@ -8,6 +8,7 @@ from typing import Optional
 
 from skill_warden.ai_signals import SlopSignal, compute_ai_slop_score
 from skill_warden.fetcher import SkillData, SkillFileData, fetch_from_github, fetch_from_local
+from skill_warden.settings import SKILL_MD_FILENAME
 from skill_warden.template_runner import (
     DetectorResult,
     Violation,
@@ -146,14 +147,60 @@ def scan_github(
 
 
 def _has_skill_md(directory: Path) -> bool:
-    return any(f.name.upper() == "SKILL.MD" for f in directory.iterdir() if f.is_file())
+    return any(f.name in (SKILL_MD_FILENAME, "program.md") for f in directory.iterdir() if f.is_file())
+
+
+def _validate_local_skill_md(skill_dir: Path) -> Optional[str]:
+    """
+    Read SKILL.md (or program.md fallback) in skill_dir and validate frontmatter has
+    name + description, and that name matches the directory name.
+    Returns the skill name if valid, None if invalid.
+    """
+    from skill_warden.fetcher import _parse_frontmatter  # avoid circular at module level
+
+    skill_md = skill_dir / SKILL_MD_FILENAME
+    if not skill_md.is_file():
+        skill_md = skill_dir / "program.md"
+    if not skill_md.is_file():
+        return None
+    try:
+        content = skill_md.read_text(encoding="utf-8", errors="replace")
+    except Exception:
+        return None
+    fm = _parse_frontmatter(content)
+    name = fm.get("name")
+    description = fm.get("description")
+    if not name or not description:
+        return None
+    if skill_dir.name and name != skill_dir.name:
+        return None
+    return name
+
+
+def _find_nested_skill_dirs(base: Path) -> list[Path]:
+    """
+    Check each immediate subdirectory of base for a nested 'skills/' subdirectory
+    and return skill folders found there. Covers .claude/skills/, src/skills/, etc.
+    """
+    skill_dirs: list[Path] = []
+    for d in sorted(base.iterdir()):
+        if not d.is_dir():
+            continue
+        nested = d / "skills"
+        if nested.is_dir():
+            skill_dirs.extend(
+                sub for sub in sorted(nested.iterdir())
+                if sub.is_dir() and _has_skill_md(sub)
+            )
+    return skill_dirs
 
 
 def _detect_skill_dirs(base: Path) -> list[Path]:
     """
     Return a list of directories to scan as individual skills.
-    - If base itself contains SKILL.md -> [base]
-    - If base contains subdirs that have SKILL.md -> one entry per such subdir
+    - If base itself contains SKILL.md/program.md -> [base]
+    - If base contains subdirs that have SKILL.md/program.md -> one entry per such subdir
+    - If base contains */skills/ nested dirs with SKILL.md/program.md -> those dirs
     - Otherwise -> [base] (flat scan)
     """
     if not base.is_dir():
@@ -163,6 +210,9 @@ def _detect_skill_dirs(base: Path) -> list[Path]:
     skill_subdirs = [d for d in sorted(base.iterdir()) if d.is_dir() and _has_skill_md(d)]
     if skill_subdirs:
         return skill_subdirs
+    nested = _find_nested_skill_dirs(base)
+    if nested:
+        return nested
     return [base]
 
 
@@ -177,10 +227,19 @@ def scan_local(
     skill_dirs = _detect_skill_dirs(base)
     results = []
     for skill_dir in skill_dirs:
+        # Validate SKILL.md frontmatter when SKILL.md is present
+        if _has_skill_md(skill_dir):
+            validated_name = _validate_local_skill_md(skill_dir)
+            if validated_name is None:
+                continue
+            skill_name = validated_name
+        else:
+            skill_name = skill_dir.name
+
         files = fetch_from_local(str(skill_dir), root=str(base))
         result = _scan_files(
             files=files,
-            skill_name=skill_dir.name,
+            skill_name=skill_name,
             skill_path=str(skill_dir),
             github_url="",
             commit_sha="local",
