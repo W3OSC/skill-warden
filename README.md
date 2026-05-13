@@ -9,6 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 [![W3OSC](https://img.shields.io/badge/W3OSC-initiative-purple?style=flat-square)](https://github.com/W3OSC)
 [![Tests](https://img.shields.io/github/actions/workflow/status/W3OSC/skill-warden/test.yml?style=flat-square&label=tests)](https://github.com/W3OSC/skill-warden/actions)
+[![GitHub Marketplace](https://img.shields.io/badge/GitHub%20Actions-Get%20Action-2088FF?style=flat-square&logo=github-actions&logoColor=white)](https://github.com/marketplace/actions/skill-warden)
 
 **Security scanner for AI skills - detect prompt injection, jailbreaks, secret grabbing, token smuggling, and more.**
 
