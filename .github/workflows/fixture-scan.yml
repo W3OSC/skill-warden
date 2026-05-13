@@ -1,0 +1,46 @@
+name: Warden Security Scan - Fixtures
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  fixture-scan:
+    name: Scan test fixtures
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install skill-warden
+        run: pip install -e .
+
+      # --- clean skills: must exit 0 ---
+
+      - name: Scan smart-contract-auditor (expect clean)
+        run: skill-warden scan tests/fixtures/smart-contract-auditor --no-quality --no-ai-score
+
+      - name: Scan quality-test-skill (expect clean, quality only)
+        run: skill-warden scan tests/fixtures/quality-test-skill --no-quality --no-ai-score
+
+      - name: Scan obfuscation-skill (expect advisory only)
+        run: skill-warden scan tests/fixtures/obfuscation-skill --no-quality --no-ai-score
+
+      - name: Scan secret-grabber (expect advisory only)
+        run: skill-warden scan tests/fixtures/secret-grabber --no-quality --no-ai-score
+
+      # --- malicious skills: must exit non-zero ---
+
+      - name: Scan malicious-skill (expect failures detected)
+        run: |
+          skill-warden scan tests/fixtures/malicious-skill --no-quality --no-ai-score && exit 1 || true
+
+      - name: Scan jailbreak-skill (expect failures detected)
+        run: |
+          skill-warden scan tests/fixtures/jailbreak-skill --no-quality --no-ai-score && exit 1 || true
